@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Twitter WordCloud</title>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3-cloud@1.2.5/build/d3.layout.cloud.js"></script>
+</head>
+
+<body>
+  <div id="wordcloud"></div>
+  <script>
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+
+    fetch('http://localhost:3000/twitter')
+      .then(response => response.json())
+      .then(data => {
+        
+        const words = data.map(word => ({ text: word.text, size: 15 * word.value }));
+
+        const layout = d3.layout.cloud()
+          .size([800, 400])
+          .words(words)
+          .padding(5)
+          .rotate(() => Math.floor(Math.random() * 2) * 90)
+          .fontSize(d => d.size)
+          .on("end", draw);
+
+        layout.start();
+
+        function draw(words) {
+          d3.select("#wordcloud")
+            .append("svg")
+            .attr("width", layout.size()[0])
+            .attr("height", layout.size()[1])
+            .append("g")
+            .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
+            .selectAll("text")
+            .data(words)
+            .enter()
+            .append("text")
+            .style("font-size", d => d.size + "px")
+            .style("fill", () => d3.schemeCategory10[Math.floor(Math.random() * 10)])
+            .attr("text-anchor", "middle")
+            .attr("transform", d => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")")
+            .text(d => d.text);
+        }
+      })
+      .catch(error => console.error('Error:', error));
+  </script>
+</body>
+
+</html>
