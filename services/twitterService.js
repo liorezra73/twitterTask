@@ -8,11 +8,8 @@ const twitterService = {
       const url = "https://twitter135.p.rapidapi.com/UserTweets/";
       const params = { id: userId, count: count };
       const headers = {
-        "X-RapidAPI-Key":
-          process.env.RAPID_API_KEY ??
-          "55042c76admsh04f014612e3f435p181eb7jsn01dfdd93e710",
-        "X-RapidAPI-Host":
-          process.env.RAPID_API_HOST ?? "twitter135.p.rapidapi.com",
+        "X-RapidAPI-Key": process.env.RAPID_API_KEY,
+        "X-RapidAPI-Host": process.env.RAPID_API_HOST,
       };
 
       const options = httpBuilder.buildOptions(method, url, params, headers);
